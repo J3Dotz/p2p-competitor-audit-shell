@@ -86,6 +86,15 @@
   .bar-row .score{font-family:var(--mono); font-size:12px; color:var(--ink-soft); text-align:right;}
   .bar-row.p2p .score{color:var(--navy); font-weight:600;}
   .bar-scale{display:flex; justify-content:space-between; font-size:10px; color:var(--ink-faint); margin:8px 0 0 160px; text-transform:uppercase; letter-spacing:.04em;}
+  .chart-note{margin:14px 0 0; padding:10px 14px; background:var(--bg); border-radius:8px; font-size:12px; color:var(--ink-soft); line-height:1.5;}
+  .chart-note b{color:var(--ink);}
+
+  /* scoring rubric reference */
+  .rubric{background:var(--surface); border:1px solid var(--line); border-radius:var(--radius); padding:8px 22px; margin:0 0 26px;}
+  .rubric-row{display:grid; grid-template-columns:150px 1fr; gap:16px; padding:12px 0; border-top:1px solid var(--line); font-size:12.5px;}
+  .rubric-row:first-child{border-top:none;}
+  .rubric-crit{font-weight:600; color:var(--navy);}
+  .rubric-band{color:var(--ink-soft); line-height:1.5;}
 
   /* matrix */
   .matrix-controls{display:flex; gap:8px; flex-wrap:wrap; margin-bottom:16px;}
@@ -97,6 +106,7 @@
   table.matrix th{font-family:var(--mono); font-weight:500; font-size:11px; text-transform:uppercase; letter-spacing:.04em; color:var(--ink-faint); background:var(--bg); white-space:nowrap; position:sticky; top:0;}
   table.matrix td.crit{font-weight:500; color:var(--ink); white-space:nowrap; background:var(--bg);}
   table.matrix td.p2pcol{background:var(--p2p-soft);}
+  .cell-score{display:inline-block; font-family:var(--mono); font-size:10.5px; color:var(--ink-faint); white-space:nowrap;}
   table.matrix tr.dim td{opacity:.35;}
   table.matrix tr.dim td.crit{opacity:1; background:var(--p2p); color:#fff;}
 
@@ -107,8 +117,10 @@
   .profile{display:none; background:var(--surface); border:1px solid var(--line); border-radius:var(--radius); padding:26px 30px;}
   .profile.active{display:block;}
   .profile-head{display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:18px; gap:16px;}
-  .profile-head h3{margin:0; font-size:19px;}
-  .badge{font-family:var(--mono); font-size:10.5px; padding:3px 9px; border-radius:5px; text-transform:uppercase; letter-spacing:.04em; white-space:nowrap;}
+  .profile-head h3{margin:0; font-size:19px; display:flex; align-items:baseline; gap:10px; flex-wrap:wrap;}
+  .site-link{font-family:var(--mono); font-size:11px; font-weight:400; color:var(--ink-faint); text-decoration:none;}
+  .site-link:hover{color:var(--accent);}
+  .badge{font-family:var(--mono); font-size:10.5px; padding:3px 9px; border-radius:5px; text-transform:uppercase; letter-spacing:.04em; white-space:normal; text-align:right; max-width:220px;}
   .badge.benchmark{background:var(--navy); color:#fff;}
   .badge.leader{background:var(--gold-soft); color:#8A5B0A;}
   .cols{display:grid; grid-template-columns:1fr 1fr; gap:22px; margin-top:14px;}
@@ -162,7 +174,7 @@
       <a href="#next"><span class="dot"></span>Next steps</a>
     </div>
     <div class="sidebar-foot">
-      Working prototype · brand tokens final, content in progress
+      Prepared for Pathway 2 Privacy · Aug 2026
       <button class="print-btn" onclick="window.print()">Export as PDF</button>
     </div>
   </nav>
@@ -170,18 +182,18 @@
   <main>
 
     <section id="overview">
-      <div class="kicker">Pre-launch shell · content draft</div>
+      <div class="kicker">Competitor Analysis · Aug 2026</div>
       <h1>Where Pathway 2 Privacy sits in its market</h1>
       <p class="lede">A side-by-side review of 7 competitors, with P2P included as the benchmark — so it's clear where you're ahead, where you're behind, and what to fix first.</p>
       <div class="metarow">
         <span><strong>Competitors reviewed</strong> 7 + P2P benchmark</span>
         <span><strong>Criteria</strong> 7</span>
-        <span><strong>Status</strong> Content locked, screenshots pending</span>
+        <span><strong>Status</strong> Research complete · screenshots pending</span>
       </div>
 
       <div class="placeholder-note">
         <span>&#9888;</span>
-        <span><b>Written profiles and matrix text are from the full research pass</b> — only the bar-chart scores for five of the seven criteria (Positioning, Offering & Pricing, Website, Data Collection, Social & LinkedIn) are first-pass editorial judgement pending client sign-off; Trust Signals and Content & SEO scores are confirmed. Screenshots are still pending — see the checklist in the written report.</span>
+        <span><b>Every score is anchored to the documented rubric</b> below each chart — see "Scoring methodology" — based on direct visits to all 8 sites. Two things are still open: <b>mobile experience and page speed</b> haven't been tested (need a device walkthrough or PageSpeed Insights, not inferable from page content), and <b>LinkedIn posting cadence</b> can't be verified through research tools, so Social & LinkedIn is capped at 3–4 for every entity rather than presented as a real differentiator.</span>
       </div>
 
       <div class="findings" id="findings"></div>
@@ -196,10 +208,9 @@
 
       <p style="font-size:12.5px; color:var(--ink-faint); margin:10px 0 26px;">Every name is always visible — no hover required, and it survives PDF export intact.</p>
 
-      <div class="placeholder-note">
-        <span>&#9888;</span>
-        <span><b>Scores are a first-pass editorial judgement</b>, not a measured metric — confirm or adjust before this ships to Neil. The full data behind every score is in the written report.</span>
-      </div>
+      <h3>Scoring methodology</h3>
+      <p class="lede" style="font-size:13.5px; margin-bottom:14px;">Every score above maps to one of these defined bands — not a gut call.</p>
+      <div class="rubric" id="rubric"></div>
 
       <h3 style="margin-top:30px;">Full matrix (reference table)</h3>
       <div class="matrix-controls" id="critChips"></div>
@@ -244,13 +255,13 @@
     <section id="next">
       <div class="kicker">What's next</div>
       <h2>Next steps</h2>
-      <p class="lede">Screenshot library capture, mobile/speed verification, and the sitemap/IA work — this shell becomes the frame those slot into once content and assets are locked.</p>
+      <p class="lede">Screenshot library capture, mobile/speed verification, and the sitemap/IA work — this report is the frame those slot into as they're completed.</p>
     </section>
 
   </main>
 </div>
 
-<footer>Pathway 2 Privacy · Competitor Analysis · Working prototype, not for client circulation</footer>
+<footer>Pathway 2 Privacy · Competitor Analysis · Prepared August 2026</footer>
 
 <script src="content.js"></script>
 <script src="app.js"></script>

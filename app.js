@@ -1,7 +1,7 @@
 /* Renders tabs, profiles, bar charts and the matrix from CONTENT (content.js). */
 (function () {
   var C = CONTENT;
-  var p2pId = C.companies.find(function (c) { return c.badge === "benchmark"; }).id;
+  var p2pId = C.companies.find(function (c) { return c.role === "benchmark"; }).id;
 
   function esc(s) {
     return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
@@ -25,24 +25,35 @@
         .map(function (co) { return { co: co, score: scores[co.id] }; })
         .sort(function (a, b) { return a.score - b.score; });
 
-      var maxScore = rows.length ? rows[rows.length - 1].score : 10;
       var leaderId = rows.length ? rows[rows.length - 1].co.id : null;
+      var cappedNote = crit.id === "socialLinkedin"
+        ? '<p class="chart-note"><b>Capped at 3–4 for every entity.</b> LinkedIn blocks the research access needed to verify posting cadence, so this chart currently confirms platform presence only — not activity. Don’t read it as a real differentiator without a manual, logged-in check.</p>'
+        : "";
 
       var rowsHtml = rows.map(function (r) {
         var cls = "bar-row";
         if (r.co.id === p2pId) cls += " p2p";
-        else if (r.co.id === leaderId) cls += " leader";
+        else if (r.co.id === leaderId && crit.id !== "socialLinkedin") cls += " leader";
         var pct = Math.max(2, (r.score / 10) * 100);
         return '<div class="' + cls + '"><span class="name">' + esc(r.co.name) + '</span>' +
           '<div class="bar-track"><div class="bar-fill" style="width:' + pct + '%"></div></div>' +
-          '<span class="score">' + r.score.toFixed(1) + '</span></div>';
+          '<span class="score">' + r.score + '</span></div>';
       }).join("");
 
       return '<div class="bar-block" data-crit="' + crit.id + '">' +
-        '<div class="bar-head"><h3>' + esc(crit.name) + '</h3><span>Scored 0–10 · sorted low to high</span></div>' +
+        '<div class="bar-head"><h3>' + esc(crit.name) + '</h3><span>Scored 0–10 against the rubric · sorted low to high</span></div>' +
         rowsHtml +
         '<div class="bar-scale"><span>0</span><span>10</span></div>' +
+        cappedNote +
         '</div>';
+    }).join("");
+  }
+
+  // ---- Scoring rubric reference ----
+  function renderRubric() {
+    var el = document.getElementById("rubric");
+    el.innerHTML = C.criteria.map(function (crit) {
+      return '<div class="rubric-row"><span class="rubric-crit">' + esc(crit.name) + '</span><span class="rubric-band">' + esc(C.scoringRubric[crit.id]) + '</span></div>';
     }).join("");
   }
 
@@ -74,10 +85,12 @@
 
     var tbody = document.querySelector("#matrixTable tbody");
     tbody.innerHTML = C.criteria.map(function (crit) {
+      var scores = C.scores[crit.id] || {};
       var cells = C.companies.map(function (co) {
         var text = (C.matrix[crit.id] || {})[co.id] || "—";
+        var score = scores[co.id];
         var cls = co.id === p2pId ? ' class="p2pcol"' : "";
-        return "<td" + cls + ">" + text + "</td>";
+        return "<td" + cls + ">" + text + (score != null ? ' <span class="cell-score">' + score + '/10</span>' : "") + "</td>";
       }).join("");
       return '<tr data-row="' + crit.id + '"><td class="crit">' + esc(crit.name) + "</td>" + cells + "</tr>";
     }).join("");
@@ -87,7 +100,7 @@
   function renderTabs() {
     var tabbar = document.getElementById("tabbar");
     tabbar.innerHTML = C.companies.map(function (co, i) {
-      var label = co.id === p2pId ? co.name + " (baseline)" : co.name;
+      var label = co.role === "benchmark" ? co.name + " (baseline)" : co.name;
       return '<button class="tabbtn' + (i === 0 ? " active" : "") + '" data-tab="' + co.id + '">' + esc(label) + "</button>";
     }).join("");
 
@@ -107,12 +120,11 @@
     el.innerHTML = C.companies.map(function (co, i) {
       var p = C.profiles[co.id] || {};
       var badgeHtml = "";
-      if (co.badge === "benchmark") badgeHtml = '<span class="badge benchmark">Benchmark</span>';
-      else if (co.badge === "leader") badgeHtml = '<span class="badge leader">Market leader</span>';
-      else if (p.badgeLabel) badgeHtml = '<span class="badge leader">' + esc(p.badgeLabel) + '</span>';
+      if (co.role === "benchmark") badgeHtml = '<span class="badge benchmark">Benchmark</span>';
+      else if (co.badge) badgeHtml = '<span class="badge leader">' + esc(co.badge) + '</span>';
 
       return '<div class="profile' + (i === 0 ? " active" : "") + '" data-panel="' + co.id + '">' +
-        '<div class="profile-head"><h3>' + esc(co.name) + '</h3>' + badgeHtml + '</div>' +
+        '<div class="profile-head"><h3>' + esc(co.name) + ' <a class="site-link" href="' + esc(co.url) + '" target="_blank" rel="noopener">' + esc(co.url.replace(/^https?:\/\//, "")) + '</a></h3>' + badgeHtml + '</div>' +
         '<div class="cols">' +
         '<div class="colblock good"><h4>What\'s working</h4><p>' + p.working + '</p></div>' +
         '<div class="colblock bad"><h4>What\'s not</h4><p>' + p.notWorking + '</p></div>' +
@@ -143,6 +155,7 @@
 
   renderFindings();
   renderBarCharts();
+  renderRubric();
   renderMatrixControls();
   renderMatrixTable();
   renderTabs();
