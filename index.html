@@ -88,6 +88,8 @@
   .bar-scale{display:flex; justify-content:space-between; font-size:10px; color:var(--ink-faint); margin:8px 0 0 160px; text-transform:uppercase; letter-spacing:.04em;}
   .chart-note{margin:14px 0 0; padding:10px 14px; background:var(--bg); border-radius:8px; font-size:12px; color:var(--ink-soft); line-height:1.5;}
   .chart-note b{color:var(--ink);}
+  .measured-tag{font-family:var(--mono); font-size:10.5px; font-weight:500; text-transform:uppercase; letter-spacing:.04em; color:var(--accent); background:var(--accent-soft); padding:3px 9px; border-radius:5px; margin-left:8px; vertical-align:middle;}
+  .perf-flag{font-size:12px; color:var(--risk); background:var(--risk-soft); border-radius:6px; padding:6px 10px; margin:-2px 0 8px 0; line-height:1.4;}
 
   /* scoring rubric reference */
   .rubric{background:var(--surface); border:1px solid var(--line); border-radius:var(--radius); padding:8px 22px; margin:0 0 26px;}
@@ -128,6 +130,8 @@
   .colblock.good h4{color:var(--good);}
   .colblock.bad h4{color:var(--risk);}
   .colblock p{font-size:13.5px; color:var(--ink-soft); margin:0;}
+  .colblock ul{margin:0; padding-left:18px; font-size:13.5px; color:var(--ink-soft); display:flex; flex-direction:column; gap:7px;}
+  .colblock li{line-height:1.45;}
   .borrow{margin-top:16px; background:var(--accent-soft); border-radius:8px; padding:12px 15px; font-size:13.5px;}
   .borrow b{color:var(--accent);}
 
@@ -135,11 +139,18 @@
   .gapgrid{display:grid; grid-template-columns:1fr 1fr; gap:20px;}
   .gapcol{background:var(--surface); border:1px solid var(--line); border-radius:var(--radius); padding:20px 22px;}
   .gapcol h3{margin-bottom:14px;}
-  .gapitem{display:flex; gap:10px; align-items:flex-start; padding:9px 0; border-top:1px solid var(--line); font-size:13.5px; color:var(--ink-soft);}
+  .gapitem{display:flex; gap:10px; align-items:flex-start; padding:12px 0; border-top:1px solid var(--line); font-size:13px; color:var(--ink-soft); line-height:1.5;}
   .gapitem:first-of-type{border-top:none;}
-  .check{width:16px; height:16px; border-radius:4px; border:1.5px solid var(--line); flex-shrink:0; margin-top:2px; cursor:pointer;}
+  .gapitem .gaptext b{color:var(--ink); font-size:13.5px;}
+  .check{width:16px; height:16px; border-radius:4px; border:1.5px solid var(--line); flex-shrink:0; margin-top:3px; cursor:pointer;}
   .check.on{background:var(--accent); border-color:var(--accent); position:relative;}
   .check.on::after{content:'';position:absolute; left:4px; top:1px; width:4px; height:8px; border:solid #fff; border-width:0 2px 2px 0; transform:rotate(40deg);}
+
+  .magnetgrid{display:grid; grid-template-columns:repeat(3,1fr); gap:16px;}
+  .magnet-card{background:var(--surface); border:1px solid var(--line); border-radius:var(--radius); padding:18px 20px;}
+  .magnet-rank{font-family:var(--mono); font-size:11px; color:var(--accent); font-weight:600;}
+  .magnet-card h4{margin:8px 0 8px; font-size:14.5px;}
+  .magnet-card p{margin:0; font-size:13px; color:var(--ink-soft); line-height:1.5;}
 
   footer{padding:26px 44px; border-top:1px solid var(--line); font-size:12px; color:var(--ink-faint);}
 
@@ -148,10 +159,20 @@
     .layout{grid-template-columns:1fr;}
     main{padding:0 12px;}
     section{page-break-inside:avoid; margin-bottom:32px;}
+    /* #matrix and #profiles now run several pages long (rubric + 7 editorial
+       charts + full matrix + 4 performance charts; all 8 stacked profiles) —
+       too tall for "avoid" to mean anything but a huge blank gap before them.
+       Let them paginate normally; their child blocks below stay intact. */
+    #matrix, #profiles{page-break-inside:auto;}
     .print-btn{display:none;}
     .tabbar{display:none;}
     /* every profile prints, not just the active tab */
     .profile{display:block !important; margin-bottom:18px; page-break-inside:avoid;}
+    .bar-block{page-break-inside:avoid;}
+    .rubric-row{page-break-inside:avoid;}
+    .magnet-card{page-break-inside:avoid;}
+    .gapitem{page-break-inside:avoid;}
+    table.matrix tr{page-break-inside:avoid;}
     .matrix-wrap{overflow-x:visible;}
     table.matrix tr.dim td{opacity:1;}
     table.matrix tr.dim td.crit{background:var(--bg); color:var(--ink);}
@@ -188,12 +209,12 @@
       <div class="metarow">
         <span><strong>Competitors reviewed</strong> 7 + P2P benchmark</span>
         <span><strong>Criteria</strong> 7</span>
-        <span><strong>Status</strong> Research complete · screenshots pending</span>
+        <span><strong>Status</strong> Research complete · screenshot library pending</span>
       </div>
 
       <div class="placeholder-note">
         <span>&#9888;</span>
-        <span><b>Every score is anchored to the documented rubric</b> below each chart — see "Scoring methodology" — based on direct visits to all 8 sites. Two things are still open: <b>mobile experience and page speed</b> haven't been tested (need a device walkthrough or PageSpeed Insights, not inferable from page content), and <b>LinkedIn posting cadence</b> can't be verified through research tools, so Social & LinkedIn is capped at 3–4 for every entity rather than presented as a real differentiator.</span>
+        <span><b>Every editorial score is anchored to the documented rubric</b> below each chart — see "Scoring methodology" — based on direct visits to all 8 sites. <b>Technical performance is now measured</b> (see the Technical Performance section below), not editorial. Still open: <b>LinkedIn posting cadence</b> can't be verified through research tools, so Social & LinkedIn is capped at 3–4 for every entity rather than presented as a real differentiator. Screenshot library capture is also still pending.</span>
       </div>
 
       <div class="findings" id="findings"></div>
@@ -220,6 +241,10 @@
           <tbody></tbody>
         </table>
       </div>
+
+      <h3 style="margin-top:40px;">Technical Performance <span class="measured-tag">Measured, not editorial</span></h3>
+      <p class="lede" style="font-size:13.5px; margin-bottom:14px;">Google PageSpeed Insights, desktop, captured 25 Aug 2026. These are Lighthouse's own 0–100 scores, unedited — kept visually and structurally separate from the 0–10 editorial scores above so the two are never confused.</p>
+      <div id="perfCharts"></div>
     </section>
 
     <section id="profiles">
@@ -234,22 +259,20 @@
     <section id="gaps">
       <div class="kicker">Deliverables 03 & 04</div>
       <h2>Gaps, opportunities and lead magnets</h2>
+      <p class="lede">Every item below is tied to specific evidence from the competitor review, not a generic best-practice list.</p>
       <div class="gapgrid">
         <div class="gapcol">
           <h3>Quick wins</h3>
-          <div class="gapitem"><span class="check on"></span>Add any trust signal to the homepage</div>
-          <div class="gapitem"><span class="check on"></span>Simple stats block (years, engagements, sectors)</div>
-          <div class="gapitem"><span class="check"></span>Display ICO/company registration in footer</div>
-          <div class="gapitem"><span class="check"></span>One gated lead magnet (checklist PDF)</div>
+          <div id="quickWins"></div>
         </div>
         <div class="gapcol">
           <h3>Structural / longer-term</h3>
-          <div class="gapitem"><span class="check"></span>Sector pages — confirmed standard across 4 competitors</div>
-          <div class="gapitem"><span class="check"></span>Named, documented methodology</div>
-          <div class="gapitem"><span class="check"></span>Explicit engagement process (discovery → quote → onboard)</div>
-          <div class="gapitem"><span class="check"></span>Productise training as its own line</div>
+          <div id="structural"></div>
         </div>
       </div>
+      <h3 style="margin-top:28px;">Lead magnet recommendations</h3>
+      <p class="lede" style="margin-bottom:16px;">Ranked by build effort vs. proven pull in this specific market.</p>
+      <div class="magnetgrid" id="leadMagnets"></div>
     </section>
 
     <section id="next">

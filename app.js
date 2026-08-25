@@ -123,14 +123,33 @@
       if (co.role === "benchmark") badgeHtml = '<span class="badge benchmark">Benchmark</span>';
       else if (co.badge) badgeHtml = '<span class="badge leader">' + esc(co.badge) + '</span>';
 
+      function bullets(arr) {
+        return '<ul>' + (arr || []).map(function (item) { return '<li>' + item + '</li>'; }).join('') + '</ul>';
+      }
+
       return '<div class="profile' + (i === 0 ? " active" : "") + '" data-panel="' + co.id + '">' +
         '<div class="profile-head"><h3>' + esc(co.name) + ' <a class="site-link" href="' + esc(co.url) + '" target="_blank" rel="noopener">' + esc(co.url.replace(/^https?:\/\//, "")) + '</a></h3>' + badgeHtml + '</div>' +
         '<div class="cols">' +
-        '<div class="colblock good"><h4>What\'s working</h4><p>' + p.working + '</p></div>' +
-        '<div class="colblock bad"><h4>What\'s not</h4><p>' + p.notWorking + '</p></div>' +
+        '<div class="colblock good"><h4>What\'s working</h4>' + bullets(p.working) + '</div>' +
+        '<div class="colblock bad"><h4>What\'s not</h4>' + bullets(p.notWorking) + '</div>' +
         '</div>' +
         '<div class="borrow">' + p.borrow + '</div>' +
         '</div>';
+    }).join("");
+  }
+
+  // ---- Gaps, opportunities & lead magnets (deliverables 03 & 04) ----
+  function renderGaps() {
+    function gapItem(item) {
+      return '<div class="gapitem"><span class="check" tabindex="0"></span>' +
+        '<span class="gaptext"><b>' + esc(item.title) + '</b><br>' + item.detail + '</span></div>';
+    }
+    document.getElementById("quickWins").innerHTML = C.gaps.quickWins.map(gapItem).join("");
+    document.getElementById("structural").innerHTML = C.gaps.structural.map(gapItem).join("");
+
+    document.getElementById("leadMagnets").innerHTML = C.leadMagnets.map(function (m, i) {
+      return '<div class="magnet-card"><span class="magnet-rank">0' + (i + 1) + '</span>' +
+        '<h4>' + esc(m.title) + '</h4><p>' + m.detail + '</p></div>';
     }).join("");
   }
 
@@ -153,12 +172,53 @@
     });
   }
 
+  // ---- Measured PageSpeed data (0-100, Google Lighthouse — distinct from editorial scores) ----
+  // Each flagged company's finding is a specific Lighthouse audit (HTTPS is a Best
+  // Practices check; CLS/TBT/Core Web Vitals are Performance checks) — shown once,
+  // under the one chart it's actually about, not repeated under all four metrics.
+  var FLAG_METRIC = { ametros: "bestPractices", privacyhelper: "performance", pembroke: "performance", dpocentre: "performance" };
+
+  function renderPageInsights() {
+    var el = document.getElementById("perfCharts");
+    if (!el || !C.pageInsights) return;
+    var PI = C.pageInsights;
+
+    el.innerHTML = PI.metrics.map(function (metric) {
+      var scores = PI.scores[metric.id] || {};
+      var rows = C.companies
+        .filter(function (co) { return scores[co.id] != null; })
+        .map(function (co) { return { co: co, score: scores[co.id] }; })
+        .sort(function (a, b) { return a.score - b.score; });
+      var leaderId = rows.length ? rows[rows.length - 1].co.id : null;
+
+      var rowsHtml = rows.map(function (r) {
+        var cls = "bar-row";
+        if (r.co.id === p2pId) cls += " p2p";
+        else if (r.co.id === leaderId) cls += " leader";
+        var pct = Math.max(2, r.score);
+        var flag = PI.flags && FLAG_METRIC[r.co.id] === metric.id ? PI.flags[r.co.id] : null;
+        var flagHtml = flag ? '<div class="perf-flag">' + esc(flag) + '</div>' : '';
+        return '<div class="' + cls + '"><span class="name">' + esc(r.co.name) + '</span>' +
+          '<div class="bar-track"><div class="bar-fill" style="width:' + pct + '%"></div></div>' +
+          '<span class="score">' + r.score + '</span></div>' + flagHtml;
+      }).join("");
+
+      return '<div class="bar-block" data-perf="' + metric.id + '">' +
+        '<div class="bar-head"><h3>' + esc(metric.name) + '</h3><span>Measured 0–100 (Google PageSpeed) · sorted low to high</span></div>' +
+        rowsHtml +
+        '<div class="bar-scale"><span>0</span><span>100</span></div>' +
+        '</div>';
+    }).join("") + '<p class="chart-note">' + esc(PI.meta) + '</p>';
+  }
+
   renderFindings();
   renderBarCharts();
+  renderPageInsights();
   renderRubric();
   renderMatrixControls();
   renderMatrixTable();
   renderTabs();
   renderProfiles();
+  renderGaps();
   bindMisc();
 })();

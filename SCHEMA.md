@@ -66,23 +66,56 @@ in the text itself. Full explanation goes in `profiles` instead.
 One block per company id:
 ```js
 securys: {
-  working: "...",                        // "What's working" column
-  notWorking: "...",                     // "What's not" column
+  working: ["...", "...", "..."],        // "What's working" — array of 3-5 bullet strings
+  notWorking: ["...", "..."],            // "What's not" — array of bullet strings
   borrow: "<b>Worth borrowing:</b> ..."  // callout — HTML allowed, keep it to one <b> lead-in
 }
 ```
-`working` and `notWorking` accept plain text or simple HTML (e.g. `<b>`).
-Aim for 130–260 characters per field — that's the range the two-column
-layout was built and stress-tested against. Longer text (the DPO Centre
-profile runs long deliberately, as a stress test) still lays out fine; very
-long company names or paragraphs beyond ~300 characters are the point where
-it's worth a manual check in the browser before shipping. The profile badge
-pill and site link come from `companies` above, not from here.
+`working` and `notWorking` are **arrays** — each string becomes one `<li>`.
+Each item accepts plain text or simple HTML (e.g. `<b>`). Aim for 3–5 items,
+roughly one sentence each — that's the range the bulleted layout was built
+and stress-tested against (the DPO Centre profile runs to 7 bullets
+deliberately, as a stress test, and still lays out fine on screen and
+print). The profile badge pill and site link come from `companies` above,
+not from here.
 
 ## `findings`
-The two callout cards in the Overview section (`tag: "risk"` or `"gap"`,
-plus a `tagLabel` and `html` body). Edit in place; add more objects to the
-array if you need a third card (the grid is 2 columns, so a 3rd wraps below).
+The callout cards in the Overview section (`tag: "risk"` or `"gap"`, plus a
+`tagLabel` and `html` body). Edit in place; add more objects to the array if
+you need extra cards (the grid is 2 columns, so a 3rd/5th wraps below).
+
+## `pageInsights`
+Measured Google PageSpeed Insights data — kept structurally and visually
+separate from the editorial 0-10 scores above, in its own "Technical
+Performance" subsection at the end of the matrix section.
+```js
+pageInsights: {
+  meta: "Google PageSpeed Insights, desktop, captured 25 Aug 2026. Scores 0-100 per Lighthouse.",
+  metrics: [{ id: "performance", name: "Performance" }, ...],   // exactly 4: performance, accessibility, bestPractices, seo
+  scores: { performance: { companyId: 0-100, ... }, ... },       // one block per metric id
+  flags: { companyId: "Free-text red-callout note." }            // ONE flag per company, shown once
+}
+```
+Each company gets **at most one** flag, and `app.js`'s `FLAG_METRIC` map
+decides which of the 4 charts it renders under (an HTTPS/mixed-content issue
+is a Best Practices audit; CLS/TBT/Core Web Vitals issues are Performance
+audits) — it does not render under all 4 automatically. If you add a flag
+for a new company, add its id to `FLAG_METRIC` in `app.js` too, matching
+whichever Lighthouse category the flag text is actually about.
+
+## `gaps` and `leadMagnets`
+Deliverables 03/04, both data-driven:
+```js
+gaps: {
+  quickWins: [{ title: "...", detail: "..." }, ...],
+  structural: [{ title: "...", detail: "..." }, ...]
+},
+leadMagnets: [{ title: "...", detail: "..." }, ...]   // rendered in array order, numbered 01/02/03
+```
+`detail` accepts simple HTML. No fixed item count, but the two-column gap
+layout and three-column magnet grid are tuned for roughly 4-5 items and
+2-4 items respectively — many more and they'll wrap to extra rows (fine,
+just check it looks right).
 
 ---
 
