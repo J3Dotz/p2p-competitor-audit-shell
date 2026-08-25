@@ -57,22 +57,24 @@
     }).join("");
   }
 
-  // ---- Matrix: single-criterion focus view (chips select ONE criterion at a time) ----
-  // All 7 criterion groups are rendered into the DOM up front (not just the active one) so
-  // that print/PDF export captures the full matrix. On screen, only the active group is
-  // shown; print CSS forces every group visible regardless of selection state.
+  // ---- Matrix: all 7 criteria shown as stacked, titled card grids by default ----
+  // Chips filter down to one criterion at a time ("All criteria" resets). All 7 groups
+  // are always in the DOM regardless of filter state, so print/PDF export captures the
+  // complete matrix - print CSS just re-forces anything filtered-out back to visible.
   function renderMatrixControls() {
     var el = document.getElementById("critChips");
-    el.innerHTML = C.criteria.map(function (crit, i) {
-      return '<button class="chip' + (i === 0 ? " active" : "") + '" data-crit="' + crit.id + '">' + esc(crit.name) + '</button>';
-    }).join("");
+    var chips = ['<button class="chip active" data-crit="all">All criteria</button>'];
+    C.criteria.forEach(function (crit) {
+      chips.push('<button class="chip" data-crit="' + crit.id + '">' + esc(crit.name) + '</button>');
+    });
+    el.innerHTML = chips.join("");
 
     el.querySelectorAll(".chip").forEach(function (chip) {
       chip.addEventListener("click", function () {
         el.querySelectorAll(".chip").forEach(function (c) { c.classList.remove("active"); });
         chip.classList.add("active");
         document.querySelectorAll(".matrix-group").forEach(function (g) {
-          g.classList.toggle("active", g.dataset.crit === chip.dataset.crit);
+          g.classList.toggle("hidden", !(chip.dataset.crit === "all" || g.dataset.crit === chip.dataset.crit));
         });
       });
     });
@@ -80,23 +82,28 @@
 
   function renderMatrixCards() {
     var el = document.getElementById("matrixCards");
-    el.innerHTML = C.criteria.map(function (crit, i) {
+    el.innerHTML = C.criteria.map(function (crit) {
       var scores = C.scores[crit.id] || {};
       var texts = C.matrix[crit.id] || {};
 
-      var rows = C.companies
-        .map(function (co) { return { co: co, score: scores[co.id], text: texts[co.id] || "—" }; })
+      var scored = C.companies.map(function (co) { return { co: co, score: scores[co.id], text: texts[co.id] || "—" }; });
+      var p2pRow = scored.find(function (r) { return r.co.id === p2pId; });
+      // Everyone else ranked by score; P2P is pinned first regardless of its own score,
+      // since it's the benchmark readers want to see immediately, not buried wherever
+      // it happens to rank (usually low, near the bottom, on most criteria here).
+      var others = scored.filter(function (r) { return r.co.id !== p2pId; })
         .sort(function (a, b) { return (b.score || 0) - (a.score || 0); });
+      var rows = p2pRow ? [p2pRow].concat(others) : others;
 
       // Social & LinkedIn scores are capped at 3-4 for everyone and explicitly not a
       // reliable differentiator (see scoringRubric.socialLinkedin) - no gold "Leader"
       // there, matching the bar chart above, which excludes it for the same reason.
-      var leaderId = rows.length && crit.id !== "socialLinkedin" ? rows[0].co.id : null;
+      var leaderId = others.length && crit.id !== "socialLinkedin" ? others[0].co.id : null;
 
       var cardsHtml = rows.map(function (r) {
         var cls = "matrix-card";
         if (r.co.id === p2pId) cls += " p2p";
-        if (r.co.id === leaderId && r.co.id !== p2pId) cls += " leader";
+        if (r.co.id === leaderId) cls += " leader";
         var badge = r.co.id === p2pId ? '<span class="badge benchmark">Benchmark</span>'
           : (r.co.id === leaderId ? '<span class="badge leader">Leader</span>' : "");
         return '<div class="' + cls + '">' +
@@ -107,8 +114,8 @@
           '</div>';
       }).join("");
 
-      return '<div class="matrix-group' + (i === 0 ? " active" : "") + '" data-crit="' + crit.id + '">' +
-        '<h4 class="matrix-group-title print-only">' + esc(crit.name) + '</h4>' +
+      return '<div class="matrix-group" data-crit="' + crit.id + '">' +
+        '<h4 class="matrix-group-title">' + esc(crit.name) + '</h4>' +
         '<div class="matrix-cardgrid">' + cardsHtml + '</div>' +
         '</div>';
     }).join("");

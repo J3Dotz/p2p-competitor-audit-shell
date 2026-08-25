@@ -103,9 +103,10 @@
   .chip{font-family:var(--sans); font-size:12.5px; padding:6px 13px; border-radius:20px; border:1px solid var(--line); background:var(--surface); color:var(--ink-soft); cursor:pointer;}
   .chip.active{background:var(--navy); color:#fff; border-color:var(--navy);}
   .matrix-cardgrid{display:grid; grid-template-columns:repeat(auto-fill, minmax(230px, 1fr)); gap:14px;}
-  .matrix-group{display:none;}
-  .matrix-group.active{display:block;}
-  .matrix-group-title.print-only{display:none;}
+  .matrix-group{display:block; margin-bottom:36px;}
+  .matrix-group:last-child{margin-bottom:0;}
+  .matrix-group.hidden{display:none;}
+  .matrix-group-title{font-family:var(--serif); font-weight:600; font-size:15px; margin:0 0 12px; color:var(--navy);}
   .matrix-card{background:var(--surface); border:1px solid var(--line); border-radius:var(--radius); padding:16px 18px; display:flex; flex-direction:column; gap:8px;}
   .matrix-card.p2p{background:var(--p2p-soft); border-color:var(--navy);}
   .matrix-card.leader{border-color:var(--gold);}
@@ -175,9 +176,8 @@
     .rubric-row{page-break-inside:avoid;}
     .magnet-card{page-break-inside:avoid;}
     .gapitem{page-break-inside:avoid;}
-    /* every criterion group prints, not just the active chip's selection */
-    .matrix-group{display:block !important; margin-bottom:22px; page-break-inside:avoid;}
-    .matrix-group-title.print-only{display:block; font-size:14px; margin:0 0 10px; color:var(--navy);}
+    /* every criterion group prints, even if a chip had filtered down to one on screen */
+    .matrix-group, .matrix-group.hidden{display:block !important; margin-bottom:22px; page-break-inside:avoid;}
     .matrix-controls{display:none;}
     .matrix-card{page-break-inside:avoid;}
   }
@@ -238,9 +238,9 @@
       <div class="rubric" id="rubric"></div>
 
       <h3 style="margin-top:30px;">Compare by criterion</h3>
-      <p class="lede" style="font-size:13.5px; margin-bottom:14px;">Pick one criterion — see all 8 companies ranked highest to lowest for that criterion only, with the full evidence behind each score.</p>
+      <p class="lede" style="font-size:13.5px; margin-bottom:14px;">All 8 companies ranked highest to lowest, one card grid per criterion, with the full evidence behind each score. P2P is always pinned first. Use the chips to filter down to a single criterion, or "All criteria" to see everything again.</p>
       <div class="matrix-controls" id="critChips"></div>
-      <div class="matrix-cardgrid" id="matrixCards"></div>
+      <div id="matrixCards"></div>
 
       <h3 style="margin-top:40px;">Technical Performance <span class="measured-tag">Measured, not editorial</span></h3>
       <p class="lede" style="font-size:13.5px; margin-bottom:14px;">Google PageSpeed Insights, desktop, captured 25 Aug 2026. These are Lighthouse's own 0–100 scores, unedited — kept visually and structurally separate from the 0–10 editorial scores above so the two are never confused.</p>
@@ -286,7 +286,7 @@
 
 <footer>Pathway 2 Privacy · Competitor Analysis · Prepared August 2026</footer>
 
-<script src="content.js?v=6"></script>
-<script src="app.js?v=6"></script>
+<script src="content.js?v=7"></script>
+<script src="app.js?v=7"></script>
 </body>
 </html>
