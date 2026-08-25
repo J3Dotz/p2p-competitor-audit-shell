@@ -179,15 +179,32 @@
 
     var sections = document.querySelectorAll("main section");
     var navlinks = document.querySelectorAll("#navlist a");
-    window.addEventListener("scroll", function () {
-      var pos = window.scrollY + 100;
-      sections.forEach(function (sec, i) {
-        if (pos >= sec.offsetTop) {
-          navlinks.forEach(function (l) { l.classList.remove("active"); });
-          navlinks[i].classList.add("active");
-        }
-      });
+    var linkFor = {};
+    navlinks.forEach(function (l) { linkFor[l.getAttribute("href").slice(1)] = l; });
+
+    function setActive(id) {
+      navlinks.forEach(function (l) { l.classList.remove("active"); });
+      if (linkFor[id]) linkFor[id].classList.add("active");
+    }
+
+    // Instant feedback the moment a link is clicked - doesn't wait on scroll tracking,
+    // which used to leave the sidebar looking unresponsive/stuck on "Overview".
+    navlinks.forEach(function (l) {
+      l.addEventListener("click", function () { setActive(l.getAttribute("href").slice(1)); });
     });
+
+    // IntersectionObserver instead of a manual scroll+offsetTop listener: fires
+    // reliably on real scrolling (the old listener could go stale after an anchor
+    // jump) and reports the correct section as soon as it's set up, so the sidebar
+    // is right on page load too, not just after the user scrolls once.
+    if ("IntersectionObserver" in window) {
+      var observer = new IntersectionObserver(function (entries) {
+        entries.forEach(function (entry) {
+          if (entry.isIntersecting) setActive(entry.target.id);
+        });
+      }, { rootMargin: "-40% 0px -55% 0px", threshold: 0 });
+      sections.forEach(function (sec) { observer.observe(sec); });
+    }
   }
 
   // ---- Measured PageSpeed data (0-100, Google Lighthouse — distinct from editorial scores) ----
