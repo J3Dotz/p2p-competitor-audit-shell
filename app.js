@@ -57,42 +57,60 @@
     }).join("");
   }
 
-  // ---- Matrix: chips + table ----
+  // ---- Matrix: single-criterion focus view (chips select ONE criterion at a time) ----
+  // All 7 criterion groups are rendered into the DOM up front (not just the active one) so
+  // that print/PDF export captures the full matrix. On screen, only the active group is
+  // shown; print CSS forces every group visible regardless of selection state.
   function renderMatrixControls() {
     var el = document.getElementById("critChips");
-    var chips = ['<button class="chip active" data-crit="all">All criteria</button>'];
-    C.criteria.forEach(function (crit) {
-      chips.push('<button class="chip" data-crit="' + crit.id + '">' + esc(crit.name) + '</button>');
-    });
-    el.innerHTML = chips.join("");
+    el.innerHTML = C.criteria.map(function (crit, i) {
+      return '<button class="chip' + (i === 0 ? " active" : "") + '" data-crit="' + crit.id + '">' + esc(crit.name) + '</button>';
+    }).join("");
 
     el.querySelectorAll(".chip").forEach(function (chip) {
       chip.addEventListener("click", function () {
         el.querySelectorAll(".chip").forEach(function (c) { c.classList.remove("active"); });
         chip.classList.add("active");
-        document.querySelectorAll("#matrixTable tbody tr").forEach(function (row) {
-          row.classList.toggle("dim", !(chip.dataset.crit === "all" || row.dataset.row === chip.dataset.crit));
+        document.querySelectorAll(".matrix-group").forEach(function (g) {
+          g.classList.toggle("active", g.dataset.crit === chip.dataset.crit);
         });
       });
     });
   }
 
-  function renderMatrixTable() {
-    var thead = document.querySelector("#matrixTable thead tr");
-    thead.innerHTML = "<th>Criteria</th>" + C.companies.map(function (co) {
-      return "<th>" + esc(co.short) + "</th>";
-    }).join("");
-
-    var tbody = document.querySelector("#matrixTable tbody");
-    tbody.innerHTML = C.criteria.map(function (crit) {
+  function renderMatrixCards() {
+    var el = document.getElementById("matrixCards");
+    el.innerHTML = C.criteria.map(function (crit, i) {
       var scores = C.scores[crit.id] || {};
-      var cells = C.companies.map(function (co) {
-        var text = (C.matrix[crit.id] || {})[co.id] || "—";
-        var score = scores[co.id];
-        var cls = co.id === p2pId ? ' class="p2pcol"' : "";
-        return "<td" + cls + ">" + text + (score != null ? ' <span class="cell-score">' + score + '/10</span>' : "") + "</td>";
+      var texts = C.matrix[crit.id] || {};
+
+      var rows = C.companies
+        .map(function (co) { return { co: co, score: scores[co.id], text: texts[co.id] || "—" }; })
+        .sort(function (a, b) { return (b.score || 0) - (a.score || 0); });
+
+      // Social & LinkedIn scores are capped at 3-4 for everyone and explicitly not a
+      // reliable differentiator (see scoringRubric.socialLinkedin) - no gold "Leader"
+      // there, matching the bar chart above, which excludes it for the same reason.
+      var leaderId = rows.length && crit.id !== "socialLinkedin" ? rows[0].co.id : null;
+
+      var cardsHtml = rows.map(function (r) {
+        var cls = "matrix-card";
+        if (r.co.id === p2pId) cls += " p2p";
+        if (r.co.id === leaderId && r.co.id !== p2pId) cls += " leader";
+        var badge = r.co.id === p2pId ? '<span class="badge benchmark">Benchmark</span>'
+          : (r.co.id === leaderId ? '<span class="badge leader">Leader</span>' : "");
+        return '<div class="' + cls + '">' +
+          '<div class="matrix-card-head"><h4>' + esc(r.co.name) + '</h4>' +
+          '<span class="matrix-card-score">' + (r.score != null ? r.score : "—") + '<span class="matrix-card-scale">/10</span></span></div>' +
+          badge +
+          '<p>' + r.text + '</p>' +
+          '</div>';
       }).join("");
-      return '<tr data-row="' + crit.id + '"><td class="crit">' + esc(crit.name) + "</td>" + cells + "</tr>";
+
+      return '<div class="matrix-group' + (i === 0 ? " active" : "") + '" data-crit="' + crit.id + '">' +
+        '<h4 class="matrix-group-title print-only">' + esc(crit.name) + '</h4>' +
+        '<div class="matrix-cardgrid">' + cardsHtml + '</div>' +
+        '</div>';
     }).join("");
   }
 
@@ -216,7 +234,7 @@
   renderPageInsights();
   renderRubric();
   renderMatrixControls();
-  renderMatrixTable();
+  renderMatrixCards();
   renderTabs();
   renderProfiles();
   renderGaps();
