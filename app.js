@@ -246,14 +246,12 @@
     }).join("") + '<p class="chart-note">' + esc(PI.meta) + '</p>';
   }
 
-  renderFindings();
-  renderBarCharts();
-  renderPageInsights();
-  renderRubric();
-  renderMatrixControls();
-  renderMatrixCards();
-  renderTabs();
-  renderProfiles();
-  renderGaps();
-  bindMisc();
+  // Each section renders independently - if one throws (bad data, a stray typo, a
+  // stale-cache mismatch between app.js and content.js after a deploy), it's logged
+  // and skipped rather than silently aborting every render call that comes after it,
+  // which is what a plain top-to-bottom call list would otherwise do.
+  [renderFindings, renderBarCharts, renderPageInsights, renderRubric, renderMatrixControls,
+    renderMatrixCards, renderTabs, renderProfiles, renderGaps, bindMisc].forEach(function (fn) {
+    try { fn(); } catch (e) { console.error("[p2p-report] " + fn.name + " failed:", e); }
+  });
 })();
