@@ -42,10 +42,11 @@ reference table under the bar charts — it's what makes every score
 defensible as "anchored to a band," not a gut call. If you change how a
 criterion is scored, update its rubric text here so the two stay in sync.
 
-Social & LinkedIn's rubric is a deliberate exception: it explains why the
-score is capped at 3–4 for everyone (LinkedIn blocks the research access
-needed to verify posting cadence) rather than describing bands. `app.js`
-also prints this as an inline note directly under that specific chart.
+Social & LinkedIn is scored the same way as every other criterion now that
+each competitor's posting cadence has been manually verified (followers,
+posts/month, content mix) via a logged-in review — there's no longer a
+capped/unverified special case here. P2P's own cadence is still unverified,
+which is why its score there stays low; update it once that's checked.
 
 ## 4. `scores`
 One block per criterion id, each holding `{ companyId: score }` pairs —
@@ -53,8 +54,7 @@ One block per criterion id, each holding `{ companyId: score }` pairs —
 `scoringRubric`. You don't need to list every company — only the ones with
 a score show up in that chart, and the chart sorts itself low to high
 automatically. The highest score in each chart is auto-flagged gold
-("leader"); P2P's bar is auto-flagged navy. (Social & LinkedIn never gets a
-gold leader bar, since every score there is capped/unverified.)
+("leader"); P2P's bar is auto-flagged navy.
 
 ## 5. `matrix`
 Short reference-table text (aim for well under 90 characters — it's an

@@ -26,14 +26,11 @@
         .sort(function (a, b) { return a.score - b.score; });
 
       var leaderId = rows.length ? rows[rows.length - 1].co.id : null;
-      var cappedNote = crit.id === "socialLinkedin"
-        ? '<p class="chart-note"><b>Capped at 3–4 for every entity.</b> LinkedIn blocks the research access needed to verify posting cadence, so this chart currently confirms platform presence only — not activity. Don’t read it as a real differentiator without a manual, logged-in check.</p>'
-        : "";
 
       var rowsHtml = rows.map(function (r) {
         var cls = "bar-row";
         if (r.co.id === p2pId) cls += " p2p";
-        else if (r.co.id === leaderId && crit.id !== "socialLinkedin") cls += " leader";
+        else if (r.co.id === leaderId) cls += " leader";
         var pct = Math.max(2, (r.score / 10) * 100);
         return '<div class="' + cls + '"><span class="name">' + esc(r.co.name) + '</span>' +
           '<div class="bar-track"><div class="bar-fill" style="width:' + pct + '%"></div></div>' +
@@ -44,7 +41,6 @@
         '<div class="bar-head"><h3>' + esc(crit.name) + '</h3><span>Scored 0–10 against the rubric · sorted low to high</span></div>' +
         rowsHtml +
         '<div class="bar-scale"><span>0</span><span>10</span></div>' +
-        cappedNote +
         '</div>';
     }).join("");
   }
@@ -95,10 +91,7 @@
         .sort(function (a, b) { return (b.score || 0) - (a.score || 0); });
       var rows = p2pRow ? [p2pRow].concat(others) : others;
 
-      // Social & LinkedIn scores are capped at 3-4 for everyone and explicitly not a
-      // reliable differentiator (see scoringRubric.socialLinkedin) - no gold "Leader"
-      // there, matching the bar chart above, which excludes it for the same reason.
-      var leaderId = others.length && crit.id !== "socialLinkedin" ? others[0].co.id : null;
+      var leaderId = others.length ? others[0].co.id : null;
 
       var cardsHtml = rows.map(function (r) {
         var cls = "matrix-card";

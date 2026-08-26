@@ -43,7 +43,7 @@ const CONTENT = {
     website: "0–2 thin, no depth. 5–6 reasonable IA, some sector depth. 9–10 sector pages + mega-menu depth, current build.",
     dataCollection: "0–2 contact form only. 5–6 form + newsletter/CTA variety. 9–10 gated content + self-serve tool + tracked funnel.",
     contentSeo: "0–2 no content. 5–6 active blog. 9–10 multi-format + verified strong rankings.",
-    socialLinkedin: "Capped at 3–4 for every entity — LinkedIn blocks cadence verification via research tools, so this criterion currently confirms platform presence only, not activity. Not a reliable differentiator without a manual, logged-in check.",
+    socialLinkedin: "0–2 dormant or near-inactive (minimal following, no meaningful recent cadence). 5–6 moderate, consistent cadence (roughly 2–5 posts/month) with a developing content strategy. 9–10 high-frequency (10+ posts/month), large following, a genuinely varied content mix. Based on a manual, logged-in review of each entity's LinkedIn (and other social) activity over the last 3–6 months.",
     trustSignals: "0–2 none. 5–6 named testimonials OR badges. 9–10 named clients + testimonials + certifications + registration transparency."
   },
 
@@ -54,7 +54,7 @@ const CONTENT = {
     website:        { p2p: 2, securys: 7, pembroke: 6, lighthouse: 6, ica: 6, privacyhelper: 9, dpocentre: 9, ametros: 8 },
     dataCollection: { p2p: 1, securys: 5, pembroke: 7, lighthouse: 5, ica: 7, privacyhelper: 8, dpocentre: 6, ametros: 7 },
     contentSeo:     { p2p: 1, securys: 7, pembroke: 6, lighthouse: 7, ica: 8, privacyhelper: 8, dpocentre: 10, ametros: 6 },
-    socialLinkedin: { p2p: 3, securys: 3, pembroke: 4, lighthouse: 4, ica: 4, privacyhelper: 4, dpocentre: 4, ametros: 3 },
+    socialLinkedin: { p2p: 1, securys: 5, pembroke: 6, lighthouse: 4, ica: 4, privacyhelper: 3, dpocentre: 9, ametros: 1 },
     trustSignals:   { p2p: 1, securys: 7, pembroke: 7, lighthouse: 6, ica: 7, privacyhelper: 9, dpocentre: 9, ametros: 6 }
   },
 
@@ -111,14 +111,14 @@ const CONTENT = {
       ametros: "Ranks top 10–20 for outsourced-DPO cluster, press section"
     },
     socialLinkedin: {
-      p2p: "LinkedIn only, footer link",
-      securys: "LinkedIn present",
-      pembroke: "LinkedIn + Twitter/X present",
-      lighthouse: "LinkedIn + YouTube present",
-      ica: "LinkedIn + Twitter/X + Facebook present",
-      privacyhelper: "Facebook + Twitter/X + LinkedIn present",
-      dpocentre: "LinkedIn present",
-      ametros: "Not verified"
+      p2p: "LinkedIn only, footer link — cadence not verified",
+      securys: "2k followers, 5.5 posts/mo historically — none in the last month",
+      pembroke: "2k followers, ~5 posts/mo, timely topics, low engagement",
+      lighthouse: "199 followers, ~2 posts/mo — improving via podcast + relaunch",
+      ica: "279 followers, ~2.5 posts/mo, leans on calendar-hook content",
+      privacyhelper: "914 followers, ~4 posts + 4 reposts in 6mo — unclear focus",
+      dpocentre: "9k followers, ~20 posts/mo — carousels, news, webinars",
+      ametros: "72 followers, dormant — last post 6 months ago"
     },
     trustSignals: {
       p2p: "None — no logos, testimonials, badges, or registration numbers",
@@ -206,7 +206,8 @@ const CONTENT = {
       notWorking: [
         "Not a like-for-like competitor on size — the enterprise focus means some of its patterns (jurisdiction map, maturity tiers) may be over-engineered for P2P's SME-heavy client base",
         "No visible gated content or lead magnet on the homepage — relies on direct contact/consultation CTAs only",
-        "PageSpeed flags a large network payload (13.7MB total) and the lowest Accessibility score of the client-nominated group (84/100) — missing image alt text and heading-order issues"
+        "PageSpeed flags a large network payload (13.7MB total) and the lowest Accessibility score of the client-nominated group (84/100) — missing image alt text and heading-order issues",
+        "LinkedIn cadence has gone quiet — a historically solid 5.5 posts/month (2k followers) but nothing posted in the last month"
       ],
       borrow: "<b>Worth borrowing:</b> maturity-stage segmentation (early/growth/maturity) as an alternative to segmenting by service line alone."
     },
@@ -216,7 +217,8 @@ const CONTENT = {
         "Legal-background team positioning (\u201Cmany of our team members have qualified as lawyers\u201D) is distinctive and credible",
         "Enquiry form already carries GCLID/UTM hidden fields — proof they're running and properly tracking paid ads",
         "Named team bios, multiple named testimonials, IAPP official partner badge, Strand Alliance network membership",
-        "Dual Ireland/UK office presence — directly relevant given P2P's own cross-border consulting exposure"
+        "Dual Ireland/UK office presence — directly relevant given P2P's own cross-border consulting exposure",
+        "Active, timely LinkedIn presence (2k followers, ~5 posts/month) — live events and regulatory topics like the EU AI Act, not just service promotion"
       ],
       notWorking: [
         "Mega-menu is deep enough (5 separate top-level sections: Support/AI/DPO/Rep/Training) to risk over-complicating navigation",
@@ -235,7 +237,8 @@ const CONTENT = {
       ],
       notWorking: [
         "Offering menu (DPO / Advice & Assurance / Training) is broad but shallow — services aren't deeply differentiated from each other on the page",
-        "No sector pages, despite this being the standard pattern among the stronger competitors in this set"
+        "No sector pages, despite this being the standard pattern among the stronger competitors in this set",
+        "LinkedIn is small (199 followers, ~2 posts/month) and was generic until recently — only picked up in the last two months alongside the podcast push and site relaunch"
       ],
       borrow: "<b>Worth borrowing:</b> the stats block pattern (years operating, engagements completed) is the single lowest-effort, highest-impact quick win in this entire set — P2P could implement something similar almost immediately."
     },
@@ -249,7 +252,8 @@ const CONTENT = {
       ],
       notWorking: [
         "Different market position than P2P (cyber-led rather than DP-led) means not every pattern here transfers directly",
-        "No published pricing or process transparency beyond the free assessment tool"
+        "No published pricing or process transparency beyond the free assessment tool",
+        "LinkedIn strategy leans on generic calendar hooks (Daylight Saving, summer solstice) rather than the substance of their own blog — only 279 followers, ~2.5 posts/month"
       ],
       borrow: "<b>Worth borrowing:</b> the free self-serve maturity assessment as a lead magnet, and the standard set by their blog for what \u201Cactive content\u201D should actually look like."
     },
@@ -264,7 +268,8 @@ const CONTENT = {
       notWorking: [
         "Service catalogue is large enough (20+ pages) to risk diluting focus if navigation isn't organised carefully — worth reviewing their nav pattern before copying the breadth wholesale",
         "No visible published pricing, consistent with the rest of the set",
-        "Technical execution doesn't match its content strength — Performance is 39/100 with a severe layout-shift bug (CLS 0.489, likely the rotating hero or cookie banner). Worth borrowing the content strategy, not the build quality."
+        "Technical execution doesn't match its content strength — Performance is 39/100 with a severe layout-shift bug (CLS 0.489, likely the rotating hero or cookie banner). Worth borrowing the content strategy, not the build quality.",
+        "Social presence doesn't match the site either — 914 followers, just 4 original posts (plus 4 reposts) in six months, with unclear messaging and objectives"
       ],
       borrow: "<b>Worth borrowing:</b> the sector-page pattern (proof this works commercially, not just a keyword-volume theory), the gated checklist lead magnet, and displaying ICO/company/VAT registration numbers as a simple transparency signal."
     },
@@ -276,7 +281,8 @@ const CONTENT = {
         "Six sector pages (Finance, Healthcare, Software, Retail, Education, Charities) plus a dedicated Life Sciences vertical",
         "Structured, named methodology (\u201CSchedule of Works,\u201D aligned to GDPR's 7 principles) plus a primary + secondary DPO continuity model",
         "Genuinely active content programme — dated blog posts, two separate newsletters, a white paper library",
-        "Ranks #1 for 25+ of P2P's own target keywords — the single largest SEO threat in this market"
+        "Ranks #1 for 25+ of P2P's own target keywords — the single largest SEO threat in this market",
+        "Also the clear social leader — 9k LinkedIn followers and roughly 20 posts a month, mixing carousels, company news and webinars"
       ],
       notWorking: [
         "Mega-menu is genuinely dense (10+ top-level items, several with sub-menus) — what \u201Ctoo much scope, not enough hierarchy\u201D looks like at the far end, even though it clearly isn't hurting their SEO",
@@ -295,7 +301,7 @@ const CONTENT = {
       ],
       notWorking: [
         "Homepage stats block (continents served, revenue protected, employees supported) displayed with placeholder-style formatting on this pass — worth a manual check that these numbers render correctly live, since a broken stats block undercuts the exact trust signal it's meant to build",
-        "Social & LinkedIn presence not verified at all on this pass — only the site itself was reviewed",
+        "LinkedIn has gone dormant — 72 followers, no post in six months, and even the earlier 1–2/month cadence was service-pitch content with little engagement",
         "Fails an HTTPS check (1 insecure request found) and posts the lowest Performance score in the set (53/100) — a real, fixable technical weakness despite the strong positioning"
       ],
       borrow: "<b>Worth borrowing:</b> the explicit, named engagement process (Discovery Call → Proposal → Onboarding) gives prospects a concrete next step and timeline — more reassuring than P2P's single repeated CTA with no indication of what happens next."
