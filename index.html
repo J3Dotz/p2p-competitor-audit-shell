@@ -35,7 +35,7 @@
     --mono:'IBM Plex Mono', monospace;
   }
   *{box-sizing:border-box;}
-  body{margin:0; background:var(--bg); color:var(--ink); font-family:var(--sans); line-height:1.55; font-size:15px;}
+  body{margin:0; background:var(--bg); color:var(--ink); font-family:var(--sans); line-height:1.55; font-size:15px; overflow-x:hidden;}
   a{color:var(--accent);}
   .layout{display:grid; grid-template-columns:248px minmax(0,1fr); max-width:1180px; margin:0 auto;}
   .sidebar{position:sticky; top:0; align-self:start; height:100vh; padding:28px 20px; border-right:1px solid var(--line); display:flex; flex-direction:column; gap:22px;}
@@ -162,7 +162,7 @@
      multi-column grid stacks to one column, fixed-width layout columns
      (bar-row's name column, rubric-row's label column) shrink to fit. */
   @media (max-width: 860px){
-    .layout{grid-template-columns:1fr; max-width:100%;}
+    .layout{grid-template-columns:minmax(0,1fr); max-width:100%;}
     .sidebar{position:sticky; top:0; z-index:20; height:auto; width:auto; flex-direction:column; align-items:stretch; border-right:none; border-bottom:1px solid var(--line); background:var(--bg); padding:14px 20px 12px; gap:12px;}
     .brand{flex-direction:row; align-items:center; gap:10px;}
     .brand img{width:100px;}
@@ -320,7 +320,7 @@
 
 <footer>Pathway 2 Privacy · Competitor Analysis · Prepared August 2026</footer>
 
-<script src="content.js?v=8"></script>
-<script src="app.js?v=8"></script>
+<script src="content.js?v=9"></script>
+<script src="app.js?v=9"></script>
 </body>
 </html>
